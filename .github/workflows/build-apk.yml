@@ -28,25 +28,17 @@ jobs:
     - name: Install SDK components
       run: sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
+    - name: Install Gradle 8.5
+      run: |
+        curl -sL https://services.gradle.org/distributions/gradle-8.5-bin.zip -o /tmp/gradle.zip
+        unzip -q /tmp/gradle.zip -d /opt
+        echo "/opt/gradle-8.5/bin" >> $GITHUB_PATH
+
     - name: Build Debug APK
       working-directory: android/AudioSender
-      run: |
-        # Generate the gradle wrapper
-        gradle wrapper --gradle-version 8.5
-        chmod +x gradlew
-        # Build and show FULL output (no tail) so we can see errors
-        ./gradlew assembleDebug --no-daemon --no-build-cache 2>&1 || true
-        # Show the last part of the build log for debugging
-        echo "=== BUILD STATUS ==="
-        ./gradlew assembleDebug --no-daemon --no-build-cache
-
-    - name: List APK outputs
-      if: always()
-      working-directory: android/AudioSender
-      run: find . -name "*.apk" -type f 2>/dev/null || echo "No APK files found"
+      run: gradle assembleDebug --no-daemon
 
     - name: Upload APK
-      if: success()
       uses: actions/upload-artifact@v4
       with:
         name: AudioSender-APK
