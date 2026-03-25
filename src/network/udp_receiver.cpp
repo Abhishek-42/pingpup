@@ -88,9 +88,16 @@ void UdpReceiver::recv_loop() {
         uint32_t payload_sz = ntohl(hdr->payload_size);
         if (payload_sz == 0 || static_cast<size_t>(received) < HEADER_SIZE + payload_sz) continue;
 
-        const int16_t* samples = reinterpret_cast<const int16_t*>(buf + HEADER_SIZE);
-        size_t sample_count    = payload_sz / sizeof(int16_t);
-        dest_.write(samples, sample_count);
+        const int16_t* raw_samples = reinterpret_cast<const int16_t*>(buf + HEADER_SIZE);
+        size_t sample_count = payload_sz / sizeof(int16_t);
+
+        // Phone sends big-endian samples; convert to little-endian (host order)
+        int16_t swapped[256];
+        size_t to_swap = (sample_count > 256) ? 256 : sample_count;
+        for (size_t i = 0; i < to_swap; ++i)
+            swapped[i] = static_cast<int16_t>(ntohs(static_cast<uint16_t>(raw_samples[i])));
+
+        dest_.write(swapped, to_swap);
 
         if (!client_active_) {
             client_active_ = true;
