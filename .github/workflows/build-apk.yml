@@ -25,21 +25,19 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Generate Gradle Wrapper
+    - name: Install SDK components
+      run: |
+        sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+    - name: Build Debug APK
       working-directory: android/AudioSender
       run: |
         gradle wrapper --gradle-version 8.5
-
-    - name: Make gradlew executable
-      working-directory: android/AudioSender
-      run: chmod +x gradlew
-
-    - name: Build Release APK
-      working-directory: android/AudioSender
-      run: ./gradlew assembleRelease --stacktrace
+        chmod +x gradlew
+        ./gradlew assembleDebug --stacktrace 2>&1 | tail -100
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: AudioSender-APK
-        path: android/AudioSender/app/build/outputs/apk/release/app-release-unsigned.apk
+        path: android/AudioSender/app/build/outputs/apk/debug/app-debug.apk
