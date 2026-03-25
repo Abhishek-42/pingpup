@@ -1,0 +1,36 @@
+name: Build Android APK
+
+on:
+  push:
+    paths:
+      - 'android/AudioSender/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android/AudioSender
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+        
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      
+    - name: Build with Gradle
+      run: gradle assembleRelease
+        
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: AudioSender-APK
+        path: android/AudioSender/app/build/outputs/apk/release/app-release-unsigned.apk

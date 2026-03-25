@@ -1,0 +1,44 @@
+# ─────────────────────────────────────────────────────────────
+# LAN Audio Bridge & Mixer — Requirements
+# ─────────────────────────────────────────────────────────────
+
+# ── Build Tools ───────────────────────────────────────────────
+CMake >= 3.20
+    https://cmake.org/download/
+
+Visual Studio 2019/2022 (MSVC) OR MinGW-w64 (GCC)
+    MSVC:  https://visualstudio.microsoft.com/downloads/
+    MinGW: https://www.mingw-w64.org/downloads/
+
+# ── Third-Party Libraries ─────────────────────────────────────
+PortAudio (v19 or later)
+    Purpose : Audio I/O — output mixed audio to headphones
+    Get it  : git clone https://github.com/PortAudio/portaudio.git
+    Build   :
+        cd portaudio
+        mkdir build && cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config Release
+    Result  : portaudio.lib (MSVC) or libportaudio.a (MinGW)
+    Place   : third_party/portaudio/  (or pass -DPORTAUDIO_ROOT=... to cmake)
+
+# ── Windows SDK (already installed with Visual Studio) ────────
+WASAPI
+    Purpose : Capture system audio via loopback
+    Install : Nothing — part of Windows SDK
+
+Winsock2
+    Purpose : TCP networking
+    Install : Nothing — part of Windows SDK
+
+# ── Optional (for Phase 5 UDP upgrade) ───────────────────────
+ASIO (standalone, header-only)
+    Purpose : Async networking (UDP phase)
+    Get it  : https://think-async.com/Asio/
+    Place   : third_party/asio/include/
+
+# ── Android (Phase 4 sender app) ─────────────────────────────
+Android Studio
+    https://developer.android.com/studio
+Android SDK >= API 29 (for AudioPlaybackCapture)
+Kotlin plugin (bundled with Android Studio)

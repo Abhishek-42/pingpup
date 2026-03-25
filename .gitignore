@@ -1,0 +1,27 @@
+# Build and Output Folders
+build/
+bin/
+Release/
+Debug/
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+*.cmake
+compile_commands.json
+
+# Visual Studio files
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+.vs/
+
+# Android generated
+android/AudioSender/app/build/
+android/AudioSender/.gradle/
+android/AudioSender/local.properties
+android/AudioSender/build/
